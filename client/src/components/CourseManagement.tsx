@@ -1,15 +1,26 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+// components/CourseManagement.tsx
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Course, Lesson, Question, Test } from "../interface/types";
+import useFetchData from "../service/dataService";
 import {
   addCourse,
   deleteCourse,
   editCourse,
+  setData,
 } from "../store/slice/courseSlice";
-import store from "../store/store";
 import "./CourseManagement.scss";
 
 const CourseManagement: React.FC = () => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useFetchData();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setData(data));
+    }
+  }, [data, dispatch]);
+
   const courses: Course[] = useSelector((state: any) => state.course.courses);
   const lessons: Lesson[] = useSelector((state: any) => state.course.lessons);
   const tests: Test[] = useSelector((state: any) => state.course.tests);
@@ -24,20 +35,28 @@ const CourseManagement: React.FC = () => {
   const handleAddCourse = () => {
     const courseName = prompt("Enter course name:");
     if (courseName) {
-      store.dispatch(addCourse({ id: courses[courses.length-1].id+1, name: courseName }));
+      dispatch(addCourse({ id: Date.now(), name: courseName }));
     }
   };
 
   const handleEditCourse = (id: number) => {
     const courseName = prompt("Edit course name:");
     if (courseName) {
-      store.dispatch(editCourse({ id, name: courseName }));
+      dispatch(editCourse({ id, name: courseName }));
     }
   };
 
   const handleDeleteCourse = (id: number) => {
-    store.dispatch(deleteCourse(id));
+    dispatch(deleteCourse(id));
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="course-management">

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import data from '../data/db.json';
-
+import React, { useEffect, useState } from "react";
 interface TestHistory {
   testId: number;
   testName: string;
@@ -52,10 +50,12 @@ const UserManagement: React.FC = () => {
                       <strong>Test Name:</strong> {test.testName}
                     </div>
                     <div>
-                      <strong>Start Time:</strong> {new Date(test.startTime).toLocaleString()}
+                      <strong>Start Time:</strong>{" "}
+                      {new Date(test.startTime).toLocaleString()}
                     </div>
                     <div>
-                      <strong>End Time:</strong> {new Date(test.endTime).toLocaleString()}
+                      <strong>End Time:</strong>{" "}
+                      {new Date(test.endTime).toLocaleString()}
                     </div>
                     <div>
                       <strong>Score:</strong> {test.score}
@@ -68,11 +68,13 @@ const UserManagement: React.FC = () => {
         ))}
       </ul>
       <div className="pagination">
-        {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(number => (
-          <button key={number} onClick={() => paginate(number + 1)}>
-            {number + 1}
-          </button>
-        ))}
+        {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
+          (number) => (
+            <button key={number} onClick={() => paginate(number + 1)}>
+              {number + 1}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

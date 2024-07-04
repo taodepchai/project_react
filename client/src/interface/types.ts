@@ -40,3 +40,10 @@ export  interface User {
     testId: number;
   }
   
+
+  export interface Data {
+    courses: Course[];
+    lessons: Lesson[];
+    tests: Test[];
+    questions: Question[];
+  }

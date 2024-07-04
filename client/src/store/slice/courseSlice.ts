@@ -1,32 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit';
-import data from '../../data/db.json';
+// store/slice/courseSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Course, Data } from '../../interface/types';
 
-const initialState = {
-  courses: data.courses,
-  lessons: data.lessons,
-  tests: data.tests,
-  questions: data.questions,
+const initialState: Data = {
+  courses: [],
+  lessons: [],
+  tests: [],
+  questions: [],
 };
 
 const courseSlice = createSlice({
   name: 'course',
   initialState,
   reducers: {
-    addCourse: (state, action) => {
+    setData: (state, action: PayloadAction<Data>) => {
+      state.courses = action.payload.courses;
+      state.lessons = action.payload.lessons;
+      state.tests = action.payload.tests;
+      state.questions = action.payload.questions;
+    },
+    addCourse: (state, action: PayloadAction<Course>) => {
       state.courses.push(action.payload);
     },
-    editCourse: (state, action) => {
-      const { id, name } = action.payload;
-      const course = state.courses.find(course => course.id === id);
-      if (course) {
-        course.name = name;
+    editCourse: (state, action: PayloadAction<Course>) => {
+      const index = state.courses.findIndex(course => course.id === action.payload.id);
+      if (index !== -1) {
+        state.courses[index] = action.payload;
       }
     },
-    deleteCourse: (state, action) => {
+    deleteCourse: (state, action: PayloadAction<number>) => {
       state.courses = state.courses.filter(course => course.id !== action.payload);
     },
-  }
+  },
 });
 
-export const { addCourse, editCourse, deleteCourse } = courseSlice.actions;
+export const { setData, addCourse, editCourse, deleteCourse } = courseSlice.actions;
 export default courseSlice.reducer;
