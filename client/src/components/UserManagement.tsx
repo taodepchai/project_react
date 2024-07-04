@@ -27,7 +27,7 @@ const UserManagement: React.FC = () => {
 
   return (
     <div>
-      <h2>User Management</h2>
+      <h2>User Manager</h2>
       <ul>
         {currentUsers.map((user, index) => (
           <li key={index}>
