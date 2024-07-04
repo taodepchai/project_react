@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { User } from "../interface/types";
 interface TestHistory {
   testId: number;
   testName: string;
@@ -7,12 +8,7 @@ interface TestHistory {
   score: number;
 }
 
-interface User {
-  username: string;
-  password: string;
-  email: string;
-  testHistory: TestHistory[];
-}
+
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
