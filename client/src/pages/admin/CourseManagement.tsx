@@ -1,14 +1,14 @@
 // components/CourseManagement.tsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Course, Lesson, Question, Test } from "../interface/types";
-import useFetchData from "../service/dataService";
+import { Course, Lesson, Question, Test } from "../../interface/types";
+import useFetchData from "../../service/data.service";
 import {
   addCourse,
   deleteCourse,
   editCourse,
   setData,
-} from "../store/slice/courseSlice";
+} from "../../store/slice/courseSlice";
 import "./CourseManagement.scss";
 
 const CourseManagement: React.FC = () => {
