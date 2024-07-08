@@ -1,37 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-modal";
+import { useDispatch, useSelector } from "react-redux";
 import { User } from "../../interface/types";
-import { fetchUsers, createUser, updateUser, removeUser } from "../../store/slice/userSlice";
+import {
+  createUser,
+  fetchUsers,
+  updateUser,
+} from "../../store/reducers/userSlice";
 import "./UserManagement.scss";
 
 Modal.setAppElement("#root");
 
 const UserManagement: React.FC = () => {
   const dispatch = useDispatch();
-  const users = useSelector((state: any) => state.user.users); 
+  const users = useSelector((state: any) => state.user.users);
   const loading = useSelector((state: any) => state.user.loading);
   const error = useSelector((state: any) => state.user.error);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
-  
-  
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
-  
-  
-  const currentUsers = Array.isArray(users) ? users.slice(indexOfFirstUser, indexOfLastUser) : []; 
+  const currentUsers = Array.isArray(users)
+    ? users.slice(indexOfFirstUser, indexOfLastUser)
+    : [];
 
-  
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleOpenModal = (user?: User) => {
@@ -39,13 +41,15 @@ const UserManagement: React.FC = () => {
       setCurrentUser(user);
       setIsEditing(true);
     } else {
-      setCurrentUser(
-        Object.assign({}, user, {
+      setCurrentUser({
+        id: 0,
         username: "",
         email: "",
         password: "",
-        testHistory: []  
-      }));
+        testHistory: [],
+        status: 1,
+        role: "user"
+      });
       setIsEditing(false);
     }
     setModalIsOpen(true);
@@ -68,8 +72,26 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (id: number) => {
-    dispatch(removeUser(id));
+  const handleBlockUser = async (id: number) => {
+    const userToBlock = users.find((user: User) => user.id === id);
+    if (userToBlock) {
+      const updatedUser = {
+        ...userToBlock,
+        status: userToBlock.status === 1 ? 0 : 1,
+      };
+      dispatch(updateUser(updatedUser));
+    }
+  };
+
+  const handleToggleRole = async (id: number) => {
+    const userToUpdate = users.find((user: User) => user.id === id);
+    if (userToUpdate) {
+      const updatedUser = {
+        ...userToUpdate,
+        role: userToUpdate.role === "admin" ? "user" : "admin",
+      };
+      dispatch(updateUser(updatedUser));
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,18 +101,25 @@ const UserManagement: React.FC = () => {
       [name]: value,
     }));
   };
+
   return (
     <div>
       <h2>User Manager</h2>
       <button onClick={() => handleOpenModal()}>Add User</button>
-      <ul>
-        {currentUsers.map((user:User) => (
-          <li key={user.id}>
+      <div className="user-grid">
+        {currentUsers.map((user: User) => (
+          <div key={user.id} className="user-card">
             <div>
               <strong>Username:</strong> {user.username}
             </div>
             <div>
               <strong>Email:</strong> {user.email}
+            </div>
+            <div>
+              <strong>Status:</strong> {user.status === 1 ? "Active" : "Blocked"}
+            </div>
+            <div>
+              <strong>Role:</strong> {user.role}
             </div>
             <div>
               <strong>Test History:</strong>
@@ -101,32 +130,45 @@ const UserManagement: React.FC = () => {
                       <strong>Test Name:</strong> {test.testName}
                     </div>
                     <div>
-                      <strong>Start Time:</strong> {new Date(test.startTime).toLocaleString()}
+                      <strong>Start Time:</strong>{" "}
+                      {new Date(test.startTime).toLocaleString()}
                     </div>
                     <div>
-                      <strong>End Time:</strong> {new Date(test.endTime).toLocaleString()}
+                      <strong>End Time:</strong>{" "}
+                      {new Date(test.endTime).toLocaleString()}
                     </div>
                     <div>
                       <strong>Score:</strong> {test.score}
                     </div>
                   </li>
-                ))} 
+                ))}
               </ul>
             </div>
-            <button onClick={() => handleOpenModal(user)}>Edit</button>
-            <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-      <div className="pagination">
-        {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map((number) => (
-          <button key={number} onClick={() => paginate(number + 1)}>
-            {number + 1}
-          </button>
+            <button onClick={() => handleOpenModal(user)}>Detail</button>
+            <button onClick={() => handleBlockUser(user.id)}>
+              {user.status === 1 ? "Block" : "Unblock"}
+            </button>
+            <button onClick={() => handleToggleRole(user.id)}>
+              {user.role === "admin" ? "Demote to User" : "Promote to Admin"}
+            </button>
+          </div>
         ))}
       </div>
+      <div className="pagination">
+        {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
+          (number) => (
+            <button key={number} onClick={() => paginate(number + 1)}>
+              {number + 1}
+            </button>
+          )
+        )}
+      </div>
 
-      <Modal isOpen={modalIsOpen} onRequestClose={handleCloseModal} contentLabel="User Modal">
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCloseModal}
+        contentLabel="User Modal"
+      >
         <h2>{isEditing ? "Edit User" : "Add User"}</h2>
         <form onSubmit={(e) => e.preventDefault()}>
           <label>
@@ -156,7 +198,9 @@ const UserManagement: React.FC = () => {
               onChange={handleInputChange}
             />
           </label>
-          <button onClick={handleSaveUser}>{isEditing ? "Save Changes" : "Add User"}</button>
+          <button onClick={handleSaveUser}>
+            {isEditing ? "Save Changes" : "Add User"}
+          </button>
           <button onClick={handleCloseModal}>Cancel</button>
         </form>
       </Modal>

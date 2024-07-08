@@ -1,45 +1,28 @@
-.course-management {
-    padding: 20px;
-  
-    h2 {
-      margin-top: 0;
-    }
-  
-    button {
-      margin: 10px 0;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-  
-    ul {
-      list-style: none;
-      padding: 0;
-  
-      li {
-        margin-bottom: 10px;
-        padding: 5px;
-        background: #f4f4f4;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        
-        button {
-          margin-left: 5px;
-        }
-  
-        ul {
-          list-style: none;
-          padding: 0;
-  
-          li {
-            padding: 5px;
-            &.correct {
-              color: rgb(255, 0, 0);
-              font-weight: bold;
-            }
-          }
-        }
-      }
-    }
-  }
-  
+.course-management ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.course-management li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.course-management button {
+  margin-left: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+}
+
+.correct {
+  color: green;
+}

@@ -12749,21 +12749,36 @@
       "email": "123@gmail.com",
       "password": "123123",
       "testHistory": [],
-      "id": 3
+      "id": 3,
+      "status": 0,
+      "role": "user"
     },
     {
       "username": "admin",
       "email": "d@a.c",
       "password": "123",
       "testHistory": [],
-      "id": 4
+      "id": 4,
+      "status": 1,
+      "role": "user"
     },
     {
       "id": 5,
       "username": "hoangkp1122",
       "email": "abcd@mamc.ca",
       "password": "U2FsdGVkX1/m7azIweSUlv4IkHBvpfAm",
-      "testHistory": []
+      "testHistory": [],
+      "status": 0,
+      "role": "user"
+    },
+    {
+      "id": 6,
+      "username": "accc",
+      "email": "accac@ac.c",
+      "password": "U2FsdGVkX19CByfNXEoKc6w6SlH3+arnsEmcWg9fEBA=",
+      "testHistory": [],
+      "status": 0,
+      "role": "user"
     }
   ]
 }

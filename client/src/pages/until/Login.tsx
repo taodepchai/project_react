@@ -26,7 +26,8 @@ function Login() {
           account.password,
           "secret_key"
         ).toString(CryptoJS.enc.Utf8);
-
+        console.log(decryptedPassword);
+        
         if (decryptedPassword === password) {
           alert("Đăng nhập thành công");
           setError("");

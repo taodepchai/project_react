@@ -12,6 +12,8 @@ export  interface User {
     password: string;
     email: string;
     testHistory: TestHistory[];
+    status:number;
+    role:string;
   }
 
 
