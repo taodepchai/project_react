@@ -1,8 +1,9 @@
 import axios from "axios";
+import CryptoJS from "crypto-js";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CryptoJS from 'crypto-js';
 import "./Login.scss";
+import Swal from "sweetalert2";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,9 +28,32 @@ function Login() {
           "secret_key"
         ).toString(CryptoJS.enc.Utf8);
         console.log(decryptedPassword);
-        
+
         if (decryptedPassword === password) {
-          alert("Đăng nhập thành công");
+          localStorage.setItem("token", account.id);
+          let timerInterval:any;
+          Swal.fire({
+            title: "login success",
+            html:<b></b> ,
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading();
+              timerInterval = setInterval(() => {
+
+              }, 100);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+              navigate("/");
+            },
+          }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log("I was closed by the timer");
+            }
+          });
+
+          
           setError("");
         } else {
           setError("Sai mật khẩu");

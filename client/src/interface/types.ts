@@ -44,6 +44,7 @@ export  interface User {
   
 
   export interface Data {
+    users: any;
     courses: Course[];
     lessons: Lesson[];
     tests: Test[];

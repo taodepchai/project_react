@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import CourseManagement from './CourseManagement';
-import UserManagement from './UserManagement';
+import Sidebar from '../pages/admin/Sidebar';
+import CourseManagement from '../pages/admin/CourseManagement';
+import UserManagement from '../pages/admin/UserManagement';
 import './AdminDashboard.scss';
 
 const AdminDashboard: React.FC = () => {
