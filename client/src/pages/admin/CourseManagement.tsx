@@ -108,7 +108,13 @@ const CourseManagement: React.FC = () => {
     const testName = prompt("Enter test name:");
     if (testName) {
       dispatch(
-        addTest({ id: Date.now(), name: testName, lessonId: selectedLesson })
+        addTest({
+          id: Date.now(), name: testName, lessonId: selectedLesson,
+          questions: function (questions: any): unknown {
+            throw new Error("Function not implemented.");
+          },
+          duration: 0
+        })
       );
     }
   };
@@ -117,7 +123,13 @@ const CourseManagement: React.FC = () => {
     if (selectedLesson === null) return;
     const testName = prompt("Edit test name:");
     if (testName) {
-      dispatch(editTest({ id, name: testName, lessonId: selectedLesson }));
+      dispatch(editTest({
+        id, name: testName, lessonId: selectedLesson,
+        questions: function (questions: any): unknown {
+          throw new Error("Function not implemented.");
+        },
+        duration: 0
+      }));
     }
   };
 

@@ -11,6 +11,7 @@ export  interface User {
     username: string;
     password: string;
     email: string;
+    avtUrl:string;
     testHistory: TestHistory[];
     status:number;
     role:string;

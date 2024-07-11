@@ -4,6 +4,7 @@ import Login from "./pages/until/Login";
 import Signup from "./pages/until/Signup";
 import MainPage from "./components/MainPage";
 import ExamPage from "./pages/user/ExamPage";
+import UserInfo from "./pages/user/UserInfo";
 export default function App() {
   return (
     <div>
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/admin" element={<AdminDashboard></AdminDashboard>} />
         <Route path="/" element={<MainPage></MainPage>} />
         <Route path="/exam/:testId" element={<ExamPage />} />
+        <Route path="/user-info/:userId" element={<UserInfo></UserInfo>} />
       </Routes>
     </div>
   );

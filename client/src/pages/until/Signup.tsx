@@ -62,7 +62,10 @@ const Signup: React.FC = () => {
         username,
         email,
         password: encryptedPassword,
+        avtUrl:"https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
         testHistory: defaultTestHistory,
+        status: 0,
+        role: "user",
       });
 
       alert("Đăng ký thành công");
@@ -128,3 +131,4 @@ const Signup: React.FC = () => {
 };
 
 export default Signup;
+

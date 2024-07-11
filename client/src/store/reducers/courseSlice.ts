@@ -7,6 +7,7 @@ const initialState: Data = {
   lessons: [],
   tests: [],
   questions: [],
+  users: undefined
 };
 
 const courseSlice = createSlice({

@@ -18,10 +18,11 @@ const UserManagement: React.FC = () => {
   const error = useSelector((state: any) => state.user.error);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+  const [usersPerPage] = useState(5);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [sortBy, setSortBy] = useState<string | null>(null); // State for sorting
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -30,8 +31,17 @@ const UserManagement: React.FC = () => {
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
-  const currentUsers = Array.isArray(users)
-    ? users.slice(indexOfFirstUser, indexOfLastUser)
+  const sortedUsers = sortBy
+    ? [...users].sort((a, b) => {
+        if (sortBy === "username") {
+          return a.username.localeCompare(b.username);
+        }
+        return 0; 
+      })
+    : users;
+
+  const currentUsers = Array.isArray(sortedUsers)
+    ? sortedUsers.slice(indexOfFirstUser, indexOfLastUser)
     : [];
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -46,6 +56,7 @@ const UserManagement: React.FC = () => {
         username: "",
         email: "",
         password: "",
+        avtUrl:"https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
         testHistory: [],
         status: 1,
         role: "user"
@@ -212,3 +223,4 @@ const UserManagement: React.FC = () => {
 };
 
 export default UserManagement;
+

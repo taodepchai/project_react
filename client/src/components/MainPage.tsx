@@ -60,6 +60,12 @@ const MainPage: React.FC = () => {
     navigate("/login");
   };
 
+  const handleUserClick = () => {
+    if (currentUser) {
+      navigate(`/user-info/${currentUser.id}`);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!data) return <div>No data available</div>;
 
@@ -130,14 +136,21 @@ const MainPage: React.FC = () => {
         ) : (
           <button onClick={login}>Đăng nhập</button>
         )}
-        {currentUser && <div>Welcome, {currentUser.username}!</div>}
+        {currentUser && (
+          <div className="user-info" onClick={handleUserClick}>
+            <div className="user-avatar">
+            <img src={currentUser.avtUrl} alt={`${currentUser.username}'s avatar`} />
+            <p>{currentUser.username}</p>
+            </div>
+          </div>
+        )}
       </div>
       <div className="filter-section">
         <select
           value={selectedCourse}
           onChange={(e) => setSelectedCourse(e.target.value)}
         >
-          <option value="">Khoá học</option>
+          <option value="">Khoá thi</option>
           {Array.from(
             new Set(data.courses.map((course: any) => course.name))
           ).map((courseName: string) => (
@@ -150,7 +163,7 @@ const MainPage: React.FC = () => {
           value={selectedLesson}
           onChange={(e) => setSelectedLesson(e.target.value)}
         >
-          <option value="">Bài học</option>
+          <option value="">Bài thi</option>
           {Array.from(
             new Set(data.lessons.map((lesson: any) => lesson.name))
           ).map((lessonName: string) => (
@@ -163,7 +176,7 @@ const MainPage: React.FC = () => {
           value={selectedTest}
           onChange={(e) => setSelectedTest(e.target.value)}
         >
-          <option value="">Bài kiểm tra</option>
+          <option value="">Đề thi</option>
           {Array.from(new Set(data.tests.map((test: any) => test.name))).map(
             (testName: string) => (
               <option value={testName} key={testName}>
@@ -237,7 +250,7 @@ const MainPage: React.FC = () => {
               .map((test: any) => (
                 <div key={test.id}>
                   {" "}
-                  <div
+                  <div  
                     className="test-header"
                     onClick={() => handleStartExam(test.id)}
                   >
@@ -254,3 +267,4 @@ const MainPage: React.FC = () => {
 };
 
 export default MainPage;
+

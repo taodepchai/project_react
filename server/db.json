@@ -12715,25 +12715,11 @@
   },
   "account": [
     {
-      "id": 1,
-      "username": "johndoe",
-      "password": "password123",
-      "email": "john.doe@example.com",
-      "testHistory": [
-        {
-          "testId": 11,
-          "testName": "đề kiểm tra cơ bản",
-          "startTime": "2023-12-18T08:00:00.000Z",
-          "endTime": "2023-12-18T08:30:00.000Z",
-          "score": 9
-        }
-      ]
-    },
-    {
       "id": 2,
       "username": "janedoe",
       "password": "securepassword",
       "email": "jane.doe@example.com",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
       "testHistory": [
         {
           "testId": 11,
@@ -12745,18 +12731,10 @@
       ]
     },
     {
-      "username": "hoangkp",
-      "email": "123@gmail.com",
-      "password": "123123",
-      "testHistory": [],
-      "id": 3,
-      "status": 0,
-      "role": "user"
-    },
-    {
       "username": "admin",
       "email": "d@a.c",
       "password": "123",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
       "testHistory": [],
       "id": 4,
       "status": 1,
@@ -12767,27 +12745,24 @@
       "username": "hoangkp1122",
       "email": "abcd@mamc.ca",
       "password": "U2FsdGVkX1/m7azIweSUlv4IkHBvpfAm",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
       "testHistory": [],
       "status": 0,
       "role": "user"
     },
     {
-      "id": 6,
-      "username": "accc",
-      "email": "accac@ac.c",
-      "password": "U2FsdGVkX19CByfNXEoKc6w6SlH3+arnsEmcWg9fEBA=",
-      "testHistory": [],
-      "status": 0,
-      "role": "user"
+      "password": "U2FsdGVkX18FZQ761WEPwU5cmP594+PaVB/Us/Yv6Qo=",
+      "id": 7
     },
     {
-      "id": 7,
+      "id": 8,
       "username": "admin",
-      "email": "admin@gmail.com",
-      "password": "U2FsdGVkX181Szv415eHQcD78Oc4xN5V",
+      "email": "admin@admin.com",
+      "password": "U2FsdGVkX194eUrP1o1uzEsCQCvOj6j3EP5a8agzj2I=",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/avatars%2F8?alt=media&token=a45906ad-6d0d-4e1a-828c-3be130728731",
       "testHistory": [],
       "status": 0,
-      "role": "admin"
+      "role": "user"
     }
   ]
 }

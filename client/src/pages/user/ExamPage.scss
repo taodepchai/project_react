@@ -1,62 +1,64 @@
 .exam-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .timer {
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .questions {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .question {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 5px;
-  }
-  
-  .question-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .question-options {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .option {
-    display: flex;
-    align-items: center;
-  }
-  
-  .option input[type="radio"] {
-    margin-right: 10px;
-  }
-  
-  .results {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4caf50;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.timer {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.questions {
+  display: flex;
+  flex-wrap: wrap; /* Allow questions to wrap to the next line */
+  justify-content: space-between; /* Distribute questions evenly */
+  gap: 20px;
+}
+
+.question {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  flex: 1 0 25%; /* Each question takes up 25% of the available width */
+  min-width: 200px; /* Ensure a minimum width for each question */
+}
+
+.question-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.question-options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+}
+
+.option input[type="radio"] {
+  margin-right: 10px;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
