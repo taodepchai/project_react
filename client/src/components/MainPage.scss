@@ -1,143 +1,68 @@
+/* MainPage.scss */
 .exam-papers {
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-  
-      h1 {
-        color: #ff6f00;
-      }
-  
-      button {
-        background-color: #ff6f00;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-        font-size: 16px;
-      }
-    }
-  
-    .filter-section {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-  
-      select {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-      }
-  
-      button {
-        padding: 10px;
-        border: 1px solid #ddd;
-        background-color: #ff6f00;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 5px;
-      }
-    }
-  
-    .papers-section {
-      .paper-header {
-        display: flex;
-        align-items: center;
-        background-color: #f7f7f7;
-        padding: 10px;
-        margin-bottom: 10px;
-        cursor: pointer;
-  
-        .paper-icon {
-          font-size: 24px;
-          margin-right: 10px;
-        }
-  
-        .paper-title {
-          flex-grow: 1;
-  
-          h2 {
-            margin: 0;
-            color: #ff6f00;
-          }
-  
-          p {
-            margin: 0;
-          }
-        }
-  
-        .paper-count {
-          background-color: #ff6f00;
-          color: #fff;
-          padding: 5px 10px;
-          border-radius: 5px;
-        }
-      }
-  
-      .paper-body {
-        padding-left: 20px;
-        .lesson {
-          .lesson-header {
-            display: flex;
-            align-items: center;
-            background-color: #f1f1f1;
-            padding: 10px;
-            margin-bottom: 10px;
-  
-            .lesson-title {
-              flex-grow: 1;
-              color: #ff6f00;
-            }
-  
-            .lesson-count {
-              background-color: #ff6f00;
-              color: #fff;
-              padding: 5px 10px;
-              border-radius: 5px;
-            }
-          }
-  
-          .lesson-body {
-            padding-left: 20px;
-            .test {
-              .test-header {
-                display: flex;
-                align-items: center;
-                background-color: #e7e7e7;
-                padding: 10px;
-                margin-bottom: 10px;
-  
-                .test-title {
-                  flex-grow: 1;
-                  color: #ff6f00;
-                }
-  
-                .test-count {
-                  background-color: #ff6f00;
-                  color: #fff;
-                  padding: 5px 10px;
-                  border-radius: 5px;
-                }
-              }
-  
-              .test-body {
-                padding-left: 20px;
-                .question {
-                  .question-title {
-                    color: #ff6f00;
-                    font-weight: bold;
-                  }
-  
-                  .question-options {
-                    padding-left: 20px;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+.header button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.filter-section select,
+.filter-section button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+}
+
+.papers-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-section, .lesson-section, .test-section, .question-section {
+  margin-bottom: 20px;
+}
+
+.paper-header, .lesson-header, .test-header, .question {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paper-title h2, .lesson-title, .test-title, .question-title {
+  font-size: 18px;
+  color: #333;
+}
+
+.paper-title p {
+  font-size: 14px;
+  color: #666;
+}

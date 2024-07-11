@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Course, Lesson, Test } from "../interface/types";
 import useFetchData from "../service/data.service";
 import { fetchUsers } from "../store/reducers/userSlice";
 import "./MainPage.scss";
 
-const MainPage = () => {
+const MainPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const users = useSelector((state: any) => state.user.users);
@@ -15,10 +16,19 @@ const MainPage = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedLesson, setSelectedLesson] = useState<string>("");
+  const [selectedTest, setSelectedTest] = useState<string>("");
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
+  const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
+  const [showCourse, setShowCourse] = useState(true);
+  const [showLesson, setShowLesson] = useState(false);
+  const [showTest, setShowTest] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(false);
+
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -32,7 +42,6 @@ const MainPage = () => {
   const fetchCurrentUser = (token: string) => {
     try {
       const userId = Number(token);
-
       const user = users.find((user: any) => user.id === userId);
       setCurrentUser(user);
     } catch (err) {
@@ -58,28 +67,59 @@ const MainPage = () => {
     (course: any) => !selectedCourse || course.name === selectedCourse
   );
   const filteredLessons = data.lessons.filter(
-    (lesson: any) => !selectedLesson || lesson.name === selectedLesson
+    (lesson: any) =>
+      !selectedLesson ||
+      (selectedCourseId && lesson.courseId === selectedCourseId) ||
+      lesson.name === selectedLesson
+  );
+  const filteredTests = data.tests.filter(
+    (test: any) =>
+      !selectedTest ||
+      (selectedLessonId && test.lessonId === selectedLessonId) ||
+      test.name === selectedTest
   );
 
-  const getLessons = (courseId: number) =>
-    data.lessons
-      .filter((lesson: any) => lesson.courseId === courseId)
-      .map((lesson: any) => ({
-        ...lesson,
-        tests: getTests(lesson.id),
-      }));
+  const handleBackToCourse = () => {
+    setShowCourse(true);
+    setShowLesson(false);
+    setSelectedCourseId(null);
+    setSelectedLesson("");
+  };
 
-  const getTests = (lessonId: number) =>
-    data.tests
-      .filter((test: any) => test.lessonId === lessonId)
-      .map((test: any) => ({
-        ...test,
-        questions: getQuestions(test.id),
-      }));
+  const handleBackToLesson = () => {
+    setShowLesson(true);
+    setShowTest(false);
+    setSelectedLessonId(null);
+    setSelectedTest("");
+  };
 
-  const getQuestions = (testId: number) =>
-    data.questions.filter((question: any) => question.testId === testId);
-
+  const handleBackToTest = () => {
+    setShowTest(true);
+    setShowQuestion(false);
+    setSelectedTestId(null);
+  };
+  const handleStartExam = (testId: number) => {
+    const selectedTest = data.tests.find((test: Test) => test.id === testId);
+    if (selectedTest) {
+      const selectedLesson = data.lessons.find(
+        (lesson: Lesson) => lesson.id === selectedTest.lessonId
+      );
+      if (selectedLesson) {
+        const selectedCourse = data.courses.find(
+          (course: Course) => course.id === selectedLesson.courseId
+        );
+        if (selectedCourse) {
+          navigate(`/exam/${testId}`, {
+            state: {
+              courseId: selectedCourse.id,
+              lessonId: selectedLesson.id,
+              testId: selectedTest.id,
+            },
+          });
+        }
+      }
+    }
+  };
   return (
     <div className="exam-papers">
       <div className="header">
@@ -119,71 +159,95 @@ const MainPage = () => {
             </option>
           ))}
         </select>
+        <select
+          value={selectedTest}
+          onChange={(e) => setSelectedTest(e.target.value)}
+        >
+          <option value="">Bài kiểm tra</option>
+          {Array.from(new Set(data.tests.map((test: any) => test.name))).map(
+            (testName: string) => (
+              <option value={testName} key={testName}>
+                {testName}
+              </option>
+            )
+          )}
+        </select>
         <button
           onClick={() => {
             setSelectedCourse("");
             setSelectedLesson("");
+            setSelectedTest("");
           }}
         >
           Clear
         </button>
       </div>
       <div className="papers-section">
-        {filteredCourses.map((course: any) => (
-          <div key={course.id}>
-            <div
-              className="paper-header"
-              onClick={() => setSelectedCourseId(course.id)}
-            >
-              <div className={`paper-icon ${course.color}`}>{course.icon}</div>
-              <div className="paper-title">
-                <h2>{course.name}</h2>
-                <p>{course.description}</p>
-              </div>
-              <div className="paper-count">
-                {getLessons(course.id).length} bộ đề
-              </div>
-            </div>
-            {selectedCourseId === course.id && (
-              <div className="paper-body">
-                {getLessons(course.id).map((lesson: any) => (
-                  <div className="lesson" key={lesson.id}>
-                    <div className="lesson-header">
-                      <div className="lesson-title">{lesson.name}</div>
-                      <div className="lesson-count">
-                        {lesson.tests.length} tests
-                      </div>
-                    </div>
-                    <div className="lesson-body">
-                      {lesson.tests.map((test: any) => (
-                        <div className="test" key={test.id}>
-                          <div className="test-header">
-                            <div className="test-title">{test.name}</div>
-                            <div className="test-count">
-                              {test.questions.length} questions
-                            </div>
-                          </div>
-                          <div className="test-body">
-                            {test.questions.map((question: any) => (
-                              <div className="question" key={question.id}>
-                                <div className="question-title">
-                                  {question.title}
-                                </div>
-                                <div className="question-options">
-                                  {question.options.join(", ")}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+        {showCourse && (
+          <div className="course-section">
+            {filteredCourses.map((course: any) => (
+              <div key={course.id}>
+                <div
+                  className="paper-header"
+                  onClick={() => {
+                    setSelectedCourseId(course.id);
+                    setShowCourse(false);
+                    setShowLesson(true);
+                  }}
+                >
+                  <div className={`paper-icon ${course.color}`}>
+                    {course.icon}
                   </div>
-                ))}
+                  <div className="paper-title">
+                    <h2>{course.name}</h2>
+                    <p>{course.description}</p>
+                  </div>
+                </div>
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        )}
+        {showLesson && (
+          <div className="lesson-section">
+            <button onClick={handleBackToCourse}>Quay lại</button>
+            {data.lessons
+              .filter((lesson: any) => lesson.courseId === selectedCourseId)
+              .map((lesson: any) => (
+                <div key={lesson.id}>
+                  <div
+                    className="lesson-header"
+                    onClick={() => {
+                      setSelectedLessonId(lesson.id);
+                      setShowLesson(false);
+                      setShowTest(true);
+                    }}
+                  >
+                    <div className="lesson-title">{lesson.name}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+        {showTest && (
+          <div className="test-section">
+            {" "}
+            <button onClick={handleBackToLesson}>Quay lại</button>{" "}
+            {data.tests
+              .filter((test: any) => test.lessonId === selectedLessonId)
+              .map((test: any) => (
+                <div key={test.id}>
+                  {" "}
+                  <div
+                    className="test-header"
+                    onClick={() => handleStartExam(test.id)}
+                  >
+                    {" "}
+                    <div className="test-title">{test.name}</div>{" "}
+                  </div>{" "}
+                </div>
+              ))}{" "}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -34,7 +34,6 @@ function Login() {
           let timerInterval:any;
           Swal.fire({
             title: "login success",
-            html:<b></b> ,
             timer: 1000,
             timerProgressBar: true,
             didOpen: () => {

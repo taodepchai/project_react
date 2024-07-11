@@ -12779,6 +12779,15 @@
       "testHistory": [],
       "status": 0,
       "role": "user"
+    },
+    {
+      "id": 7,
+      "username": "admin",
+      "email": "admin@gmail.com",
+      "password": "U2FsdGVkX181Szv415eHQcD78Oc4xN5V",
+      "testHistory": [],
+      "status": 0,
+      "role": "admin"
     }
   ]
 }

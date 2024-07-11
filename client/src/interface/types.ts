@@ -29,6 +29,8 @@ export  interface User {
   }
   
   export interface Test {
+    questions(questions: any): unknown;
+    duration: number;
     id: number;
     name: string;
     lessonId: number;
