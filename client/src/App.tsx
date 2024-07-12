@@ -1,21 +1,25 @@
 import { Route, Routes } from "react-router-dom";
 import AdminDashboard from "./components/AdminDashboard";
-import Login from "./pages/until/Login";
-import Signup from "./pages/until/Signup";
 import MainPage from "./components/MainPage";
-import ExamPage from "./pages/user/ExamPage";
+import Contact from "./pages/user/Contact";
+import Login from "./pages/until/Login";
 import UserInfo from "./pages/user/UserInfo";
-export default function App() {
+import Signup from "./pages/until/Signup";
+import AdminChat from "./pages/admin/AdminChat";
+
+function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/login" element={<Login></Login>} />
-        <Route path="/signup" element={<Signup></Signup>} />
-        <Route path="/admin" element={<AdminDashboard></AdminDashboard>} />
-        <Route path="/" element={<MainPage></MainPage>} />
-        <Route path="/exam/:testId" element={<ExamPage />} />
-        <Route path="/user-info/:userId" element={<UserInfo></UserInfo>} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/user-info/:id" element={<UserInfo />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/contact-admin" element={<AdminChat />} />
+
+    </Routes>
   );
 }
+
+export default App;

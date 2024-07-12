@@ -66,6 +66,16 @@ const MainPage: React.FC = () => {
     }
   };
 
+  const handleAdminClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate("/contact-admin");
+    }
+  };
+
+  const handleContactClick = () => {
+    navigate("/contact");
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!data) return <div>No data available</div>;
 
@@ -130,7 +140,7 @@ const MainPage: React.FC = () => {
     <div className="exam-papers">
       <div className="header">
         <h1>90% câu hỏi trả lời trong 10 phút</h1>
-        <button>Hỏi ngay</button>
+        <button onClick={handleContactClick}>Hỏi ngay</button>
         {token ? (
           <button onClick={logout}>Đăng xuất</button>
         ) : (
@@ -139,10 +149,16 @@ const MainPage: React.FC = () => {
         {currentUser && (
           <div className="user-info" onClick={handleUserClick}>
             <div className="user-avatar">
-            <img src={currentUser.avtUrl} alt={`${currentUser.username}'s avatar`} />
-            <p>{currentUser.username}</p>
+              <img
+                src={currentUser.avtUrl}
+                alt={`${currentUser.username}'s avatar`}
+              />
+              <p>{currentUser.username}</p>
             </div>
           </div>
+        )}
+        {currentUser && currentUser.role === "admin" && (
+          <button onClick={handleAdminClick}>Admin</button>
         )}
       </div>
       <div className="filter-section">
@@ -250,7 +266,7 @@ const MainPage: React.FC = () => {
               .map((test: any) => (
                 <div key={test.id}>
                   {" "}
-                  <div  
+                  <div
                     className="test-header"
                     onClick={() => handleStartExam(test.id)}
                   >
@@ -267,4 +283,3 @@ const MainPage: React.FC = () => {
 };
 
 export default MainPage;
-

@@ -12728,7 +12728,8 @@
           "endTime": "2023-12-19T10:45:00.000Z",
           "score": 7.5
         }
-      ]
+      ],
+      "role": "user"
     },
     {
       "username": "admin",
@@ -12760,6 +12761,16 @@
       "email": "admin@admin.com",
       "password": "U2FsdGVkX194eUrP1o1uzEsCQCvOj6j3EP5a8agzj2I=",
       "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/avatars%2F8?alt=media&token=a45906ad-6d0d-4e1a-828c-3be130728731",
+      "testHistory": [],
+      "status": 0,
+      "role": "admin"
+    },
+    {
+      "id": 9,
+      "username": "hoangkp1122",
+      "email": "janc@mac.ca",
+      "password": "U2FsdGVkX182DOtR4Qi6zpm9W4/nmrSC",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
       "testHistory": [],
       "status": 0,
       "role": "user"

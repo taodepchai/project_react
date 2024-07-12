@@ -18,6 +18,9 @@ import {
   setData,
 } from "../../store/reducers/courseSlice";
 import "./CourseManagement.scss";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const CourseManagement: React.FC = () => {
   const dispatch = useDispatch();
@@ -44,6 +47,14 @@ const CourseManagement: React.FC = () => {
     "course" | "lesson" | "test" | "question"
   >("course");
   const itemsPerPage = 10;
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentData, setCurrentData] = useState<
+    Course | Lesson | Test | Question | null
+  >(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentLevelType, setCurrentLevelType] = useState<
+    "course" | "lesson" | "test" | "question"
+  >("course");
 
   const paginate = (items: any[]) => {
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -60,17 +71,20 @@ const CourseManagement: React.FC = () => {
   };
 
   const handleAddCourse = () => {
-    const courseName = prompt("Enter course name:");
-    if (courseName) {
-      dispatch(addCourse({ id: Date.now(), name: courseName }));
-    }
+    setModalIsOpen(true);
+    setCurrentData({
+      id: Date.now(),
+      name: "",
+    } as Course);
+    setIsEditing(false);
+    setCurrentLevelType("course");
   };
 
-  const handleEditCourse = (id: number) => {
-    const courseName = prompt("Edit course name:");
-    if (courseName) {
-      dispatch(editCourse({ id, name: courseName }));
-    }
+  const handleEditCourse = (course: Course) => {
+    setModalIsOpen(true);
+    setCurrentData(course);
+    setIsEditing(true);
+    setCurrentLevelType("course");
   };
 
   const handleDeleteCourse = (id: number) => {
@@ -79,24 +93,21 @@ const CourseManagement: React.FC = () => {
 
   const handleAddLesson = () => {
     if (selectedCourse === null) return;
-    const lessonName = prompt("Enter lesson name:");
-    if (lessonName) {
-      dispatch(
-        addLesson({
-          id: Date.now(),
-          name: lessonName,
-          courseId: selectedCourse,
-        })
-      );
-    }
+    setModalIsOpen(true);
+    setCurrentData({
+      id: Date.now(),
+      name: "",
+      courseId: selectedCourse,
+    } as Lesson);
+    setIsEditing(false);
+    setCurrentLevelType("lesson");
   };
 
-  const handleEditLesson = (id: number) => {
-    if (selectedCourse === null) return;
-    const lessonName = prompt("Edit lesson name:");
-    if (lessonName) {
-      dispatch(editLesson({ id, name: lessonName, courseId: selectedCourse }));
-    }
+  const handleEditLesson = (lesson: Lesson) => {
+    setModalIsOpen(true);
+    setCurrentData(lesson);
+    setIsEditing(true);
+    setCurrentLevelType("lesson");
   };
 
   const handleDeleteLesson = (id: number) => {
@@ -105,32 +116,23 @@ const CourseManagement: React.FC = () => {
 
   const handleAddTest = () => {
     if (selectedLesson === null) return;
-    const testName = prompt("Enter test name:");
-    if (testName) {
-      dispatch(
-        addTest({
-          id: Date.now(), name: testName, lessonId: selectedLesson,
-          questions: function (questions: any): unknown {
-            throw new Error("Function not implemented.");
-          },
-          duration: 0
-        })
-      );
-    }
+    setModalIsOpen(true);
+    setCurrentData({
+      id: Date.now(),
+      name: "",
+      lessonId: selectedLesson,
+      questions: [],
+      duration: 0,
+    } as unknown as Test);
+    setIsEditing(false);
+    setCurrentLevelType("test");
   };
 
-  const handleEditTest = (id: number) => {
-    if (selectedLesson === null) return;
-    const testName = prompt("Edit test name:");
-    if (testName) {
-      dispatch(editTest({
-        id, name: testName, lessonId: selectedLesson,
-        questions: function (questions: any): unknown {
-          throw new Error("Function not implemented.");
-        },
-        duration: 0
-      }));
-    }
+  const handleEditTest = (test: Test) => {
+    setModalIsOpen(true);
+    setCurrentData(test);
+    setIsEditing(true);
+    setCurrentLevelType("test");
   };
 
   const handleDeleteTest = (id: number) => {
@@ -139,46 +141,23 @@ const CourseManagement: React.FC = () => {
 
   const handleAddQuestion = () => {
     if (selectedTest === null) return;
-    const questionTitle = prompt("Enter question title:");
-    if (questionTitle) {
-      const options = prompt("Enter options separated by commas:")?.split(",");
-      const answer = parseInt(
-        prompt("Enter the correct option number:") || "1",
-        10
-      );
-      if (options) {
-        dispatch(
-          addQuestion({
-            id: Date.now(),
-            title: questionTitle,
-            options,
-            answer,
-            testId: selectedTest,
-          })
-        );
-      }
-    }
+    setModalIsOpen(true);
+    setCurrentData({
+      id: Date.now(),
+      title: "",
+      options: [],
+      answer: 0,
+      testId: selectedTest,
+    } as Question);
+    setIsEditing(false);
+    setCurrentLevelType("question");
   };
 
-  const handleEditQuestion = (id: number) => {
-    if (selectedTest === null) return;
-    const questionTitle = prompt("Edit question title:");
-    const options = prompt("Edit options separated by commas:")?.split(",");
-    const answer = parseInt(
-      prompt("Edit the correct option number:") || "1",
-      10
-    );
-    if (questionTitle && options) {
-      dispatch(
-        editQuestion({
-          id,
-          title: questionTitle,
-          options,
-          answer,
-          testId: selectedTest,
-        })
-      );
-    }
+  const handleEditQuestion = (question: Question) => {
+    setModalIsOpen(true);
+    setCurrentData(question);
+    setIsEditing(true);
+    setCurrentLevelType("question");
   };
 
   const handleDeleteQuestion = (id: number) => {
@@ -200,6 +179,47 @@ const CourseManagement: React.FC = () => {
     setCurrentLevel("question");
   };
 
+  const handleSaveData = () => {
+    if (currentData) {
+      if (isEditing) {
+        if (currentLevelType === "course") {
+          dispatch(editCourse(currentData as Course));
+        } else if (currentLevelType === "lesson") {
+          dispatch(editLesson(currentData as Lesson));
+        } else if (currentLevelType === "test") {
+          dispatch(editTest(currentData as Test));
+        } else if (currentLevelType === "question") {
+          dispatch(editQuestion(currentData as Question));
+        }
+      } else {
+        if (currentLevelType === "course") {
+          dispatch(addCourse(currentData as Course));
+        } else if (currentLevelType === "lesson") {
+          dispatch(addLesson(currentData as Lesson));
+        } else if (currentLevelType === "test") {
+          dispatch(addTest(currentData as Test));
+        } else if (currentLevelType === "question") {
+          dispatch(addQuestion(currentData as Question));
+        }
+      }
+      setModalIsOpen(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
+    setCurrentData(null);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCurrentData((prevData) => ({
+      ...prevData!,
+      [name]: value,
+    }));
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -218,7 +238,7 @@ const CourseManagement: React.FC = () => {
             {paginate(courses).map((course: Course) => (
               <li key={course.id}>
                 {course.name}
-                <button onClick={() => handleEditCourse(course.id)}>
+                <button onClick={() => handleEditCourse(course)}>
                   Edit
                 </button>
                 <button onClick={() => handleDeleteCourse(course.id)}>
@@ -252,7 +272,7 @@ const CourseManagement: React.FC = () => {
             ).map((lesson: Lesson) => (
               <li key={lesson.id}>
                 {lesson.name}
-                <button onClick={() => handleEditLesson(lesson.id)}>
+                <button onClick={() => handleEditLesson(lesson)}>
                   Edit
                 </button>
                 <button onClick={() => handleDeleteLesson(lesson.id)}>
@@ -292,7 +312,7 @@ const CourseManagement: React.FC = () => {
             ).map((test: Test) => (
               <li key={test.id}>
                 {test.name}
-                <button onClick={() => handleEditTest(test.id)}>Edit</button>
+                <button onClick={() => handleEditTest(test)}>Edit</button>
                 <button onClick={() => handleDeleteTest(test.id)}>
                   Delete
                 </button>
@@ -330,7 +350,7 @@ const CourseManagement: React.FC = () => {
             ).map((question: Question) => (
               <li key={question.id}>
                 {question.title}
-                <button onClick={() => handleEditQuestion(question.id)}>
+                <button onClick={() => handleEditQuestion(question)}>
                   Edit
                 </button>
                 <button onClick={() => handleDeleteQuestion(question.id)}>
@@ -366,8 +386,138 @@ const CourseManagement: React.FC = () => {
           </div>
         </>
       )}
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCloseModal}
+        contentLabel="Course Management Modal"
+      >
+        <h2>{isEditing ? "Edit" : "Add"} {currentLevelType}</h2>
+        <form onSubmit={(e) => e.preventDefault()}>
+          {currentLevelType === "course" && (
+            <label>
+              Name:
+              <input
+                type="text"
+                name="name"
+                value={(currentData as Course)?.name || ""}
+                onChange={handleInputChange}
+              />
+            </label>
+          )}
+          {currentLevelType === "lesson" && (
+            <>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  name="name"
+                  value={(currentData as Lesson)?.name || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Course ID:
+                <input
+                  type="number"
+                  name="courseId"
+                  value={(currentData as Lesson)?.courseId || ""}
+                  onChange={handleInputChange}
+                  disabled
+                />
+              </label>
+            </>
+          )}
+          {currentLevelType === "test" && (
+            <>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  name="name"
+                  value={(currentData as Test)?.name || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Lesson ID:
+                <input
+                  type="number"
+                  name="lessonId"
+                  value={(currentData as Test)?.lessonId || ""}
+                  onChange={handleInputChange}
+                  disabled
+                />
+              </label>
+              <label>
+                Duration:
+                <input
+                  type="number"
+                  name="duration"
+                  value={(currentData as Test)?.duration || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+            </>
+          )}
+          {currentLevelType === "question" && (
+            <>
+              <label>
+                Title:
+                <input
+                  type="text"
+                  name="title"
+                  value={(currentData as Question)?.title || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Options:
+                <input
+                  type="text"
+                  name="options"
+                  value={
+                    (currentData as Question)?.options
+                      .join(",") || ""
+                  }
+                  onChange={(e) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData!,
+                      options: e.target.value.split(","),
+                    }));
+                  }}
+                />
+              </label>
+              <label>
+                Answer:
+                <input
+                  type="number"
+                  name="answer"
+                  value={(currentData as Question)?.answer || ""}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Test ID:
+                <input
+                  type="number"
+                  name="testId"
+                  value={(currentData as Question)?.testId || ""}
+                  onChange={handleInputChange}
+                  disabled
+                />
+              </label>
+            </>
+          )}
+          <button onClick={handleSaveData}>
+            {isEditing ? "Save Changes" : "Add"}
+          </button>
+          <button onClick={handleCloseModal}>Cancel</button>
+        </form>
+      </Modal>
     </div>
   );
 };
 
 export default CourseManagement;
+

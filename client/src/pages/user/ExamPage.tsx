@@ -19,7 +19,8 @@ const ExamPage: React.FC = () => {
   const [isExamFinished, setIsExamFinished] = useState(false);
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<Date | null>(null);
-
+  console.log(testId);
+  
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
