@@ -18,7 +18,7 @@ const UserInfo: React.FC = () => {
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState(""); // Add state for current password
+  const [currentPassword, setCurrentPassword] = useState(""); 
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -89,7 +89,7 @@ const UserInfo: React.FC = () => {
         ...currentUser,
         password: encryptedPassword,
       };
-
+      localStorage.setItem("token","10");
       await axios.put(`http://localhost:3000/account/${currentUser?.id}`, updatedUser);
 
       setCurrentUser(updatedUser as User);

@@ -23,15 +23,19 @@ function Login() {
       const account = response.data[0];
 
       if (account) {
+        if (account.status === 0) {
+          setError("Tài khoản của bạn đã bị khóa");
+          return;
+        }
+
         const decryptedPassword = CryptoJS.DES.decrypt(
           account.password,
           "secret_key"
         ).toString(CryptoJS.enc.Utf8);
-        console.log(decryptedPassword);
 
         if (decryptedPassword === password) {
           localStorage.setItem("token", account.id);
-          let timerInterval:any;
+          let timerInterval: any;
           Swal.fire({
             title: "login success",
             timer: 1000,
@@ -39,7 +43,7 @@ function Login() {
             didOpen: () => {
               Swal.showLoading();
               timerInterval = setInterval(() => {
-
+                // Do nothing
               }, 100);
             },
             willClose: () => {
@@ -52,7 +56,6 @@ function Login() {
             }
           });
 
-          
           setError("");
         } else {
           setError("Sai mật khẩu");
@@ -103,3 +106,4 @@ function Login() {
 }
 
 export default Login;
+

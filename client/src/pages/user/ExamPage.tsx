@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { TestHistory } from "../../interface/types";
 import useFetchData from "../../service/data.service";
 import "./ExamPage.scss";
+import Header from "../until/Header";
 
 const ExamPage: React.FC = () => {
   const { testId } = useParams<{ testId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { data, loading, error } = useFetchData();
   const users = useSelector((state: any) => state.user.users);
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -19,12 +21,15 @@ const ExamPage: React.FC = () => {
   const [isExamFinished, setIsExamFinished] = useState(false);
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<Date | null>(null);
-  console.log(testId);
-  
+  const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
-      fetchCurrentUser(storedToken);
+      setToken(storedToken);
+      if (users) {
+        fetchCurrentUser(storedToken);
+      }
     }
   }, [users]);
 
@@ -145,6 +150,37 @@ const ExamPage: React.FC = () => {
     }
   };
 
+  const handleContactClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate("/contact-admin");
+    } else {
+      navigate("/contact");
+    }
+  };
+
+  const handleAdminClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate(`/admin/${currentUser.role}`);
+    }
+  };
+
+  const handleUserClick = () => {
+    if (currentUser) {
+      navigate(`/user-info/${currentUser.id}`);
+    }
+  };
+
+  const login = () => {
+    navigate("/login");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setCurrentUser(null);
+    navigate("/login");
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!data) return <div>No data available</div>;
   if (!questions.length) return <div>Test not found</div>;
@@ -154,8 +190,16 @@ const ExamPage: React.FC = () => {
 
   return (
     <div className="exam-page">
-      <h1>Bài kiểm tra</h1>
-      <button onClick={() => navigate(-1)}>Quay lại</button>
+      <Header
+        currentUser={currentUser}
+        token={token}
+        setCurrentUser={setCurrentUser}
+        handleContactClick={handleContactClick}
+        handleAdminClick={handleAdminClick}
+        handleUserClick={handleUserClick}
+        login={login}
+        logout={logout}
+      />
       {isExamStarted && !isExamFinished && (
         <div className="timer">
           Thời gian còn lại: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
@@ -180,29 +224,30 @@ const ExamPage: React.FC = () => {
                     <input
                       type="radio"
                       name={`question-${question.id}`}
-                      value={index + 1}
+                      value={index}
                       checked={
                         selectedAnswers.find(
-                          (answer: any) =>
-                            answer.questionId === question.id &&
-                            answer.answer === index + 1
-                        ) !== undefined
+                          (answer: any) => answer.questionId === question.id
+                        )?.answer === index
                       }
-                      onChange={() =>
-                        handleAnswerChange(question.id, index + 1)
-                      }
+                      onChange={() => handleAnswerChange(question.id, index)}
                     />
-                    <label htmlFor={`question-${question.id}`}>{option}</label>
+                    <label htmlFor={`question-${question.id}-${index}`}>
+                      {option}
+                    </label>
                   </div>
                 ))}
               </div>
             </div>
           ))}
-          <button onClick={submitExam}>Nộp bài</button>
         </div>
+      )}
+      {isExamStarted && !isExamFinished && (
+        <button onClick={submitExam}>Nộp bài</button>
       )}
     </div>
   );
 };
 
 export default ExamPage;
+

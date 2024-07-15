@@ -5,15 +5,20 @@ import { Course, Lesson, Test } from "../interface/types";
 import useFetchData from "../service/data.service";
 import { fetchUsers } from "../store/reducers/userSlice";
 import "./MainPage.scss";
+import Header from "../pages/until/Header";
 
-const MainPage: React.FC = () => {
+interface Props {
+  setCurrentUser: (user: any) => void;
+  currentUser: any;
+}
+
+const MainPage: React.FC<Props> = ({ setCurrentUser, currentUser }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const users = useSelector((state: any) => state.user.users);
 
   const { data, loading, error } = useFetchData();
   const [token, setToken] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedLesson, setSelectedLesson] = useState<string>("");
   const [selectedTest, setSelectedTest] = useState<string>("");
@@ -66,14 +71,18 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const handleAdminClick = () => {
+  const handleContactClick = () => {
     if (currentUser && currentUser.role === "admin") {
       navigate("/contact-admin");
+    } else {
+      navigate("/contact");
     }
   };
 
-  const handleContactClick = () => {
-    navigate("/contact");
+  const handleAdminClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate(`/admin/${currentUser.role}`);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -115,52 +124,20 @@ const MainPage: React.FC = () => {
     setSelectedTestId(null);
   };
   const handleStartExam = (testId: number) => {
-    const selectedTest = data.tests.find((test: Test) => test.id === testId);
-    if (selectedTest) {
-      const selectedLesson = data.lessons.find(
-        (lesson: Lesson) => lesson.id === selectedTest.lessonId
-      );
-      if (selectedLesson) {
-        const selectedCourse = data.courses.find(
-          (course: Course) => course.id === selectedLesson.courseId
-        );
-        if (selectedCourse) {
-          navigate(`/exam/${testId}`, {
-            state: {
-              courseId: selectedCourse.id,
-              lessonId: selectedLesson.id,
-              testId: selectedTest.id,
-            },
-          });
-        }
-      }
-    }
+    navigate(`/exam/${testId}`);
   };
   return (
     <div className="exam-papers">
-      <div className="header">
-        <h1>90% câu hỏi trả lời trong 10 phút</h1>
-        <button onClick={handleContactClick}>Hỏi ngay</button>
-        {token ? (
-          <button onClick={logout}>Đăng xuất</button>
-        ) : (
-          <button onClick={login}>Đăng nhập</button>
-        )}
-        {currentUser && (
-          <div className="user-info" onClick={handleUserClick}>
-            <div className="user-avatar">
-              <img
-                src={currentUser.avtUrl}
-                alt={`${currentUser.username}'s avatar`}
-              />
-              <p>{currentUser.username}</p>
-            </div>
-          </div>
-        )}
-        {currentUser && currentUser.role === "admin" && (
-          <button onClick={handleAdminClick}>Admin</button>
-        )}
-      </div>
+      <Header
+        currentUser={currentUser}
+        token={token}
+        setCurrentUser={setCurrentUser}
+        handleContactClick={handleContactClick}
+        handleAdminClick={handleAdminClick}
+        handleUserClick={handleUserClick}
+        login={login}
+        logout={logout}
+      />
       <div className="filter-section">
         <select
           value={selectedCourse}
@@ -283,3 +260,4 @@ const MainPage: React.FC = () => {
 };
 
 export default MainPage;
+

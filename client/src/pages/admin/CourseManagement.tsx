@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import { Course, Lesson, Question, Test } from "../../interface/types";
 import useFetchData from "../../service/data.service";
 import {
@@ -18,7 +20,6 @@ import {
   setData,
 } from "../../store/reducers/courseSlice";
 import "./CourseManagement.scss";
-import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
@@ -88,7 +89,20 @@ const CourseManagement: React.FC = () => {
   };
 
   const handleDeleteCourse = (id: number) => {
-    dispatch(deleteCourse(id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteCourse(id));
+      }
+    });
+    
   };
 
   const handleAddLesson = () => {
@@ -520,4 +534,3 @@ const CourseManagement: React.FC = () => {
 };
 
 export default CourseManagement;
-

@@ -31,6 +31,9 @@ const courseSlice = createSlice({
     },
     deleteCourse: (state, action: PayloadAction<number>) => {
       state.courses = state.courses.filter(course => course.id !== action.payload);
+      state.lessons = state.lessons.filter(lesson => lesson.courseId !== action.payload);
+      state.tests = state.tests.filter(test => test.lessonId !== action.payload);
+      state.questions = state.questions.filter(question => question.testId !== action.payload);
     },
     addLesson: (state, action: PayloadAction<Lesson>) => {
       state.lessons.push(action.payload);
@@ -43,6 +46,8 @@ const courseSlice = createSlice({
     },
     deleteLesson: (state, action: PayloadAction<number>) => {
       state.lessons = state.lessons.filter(lesson => lesson.id !== action.payload);
+      state.tests = state.tests.filter(test => test.lessonId !== action.payload);
+      state.questions = state.questions.filter(question => question.testId !== action.payload);
     },
     addTest: (state, action: PayloadAction<Test>) => {
       state.tests.push(action.payload);
@@ -55,6 +60,7 @@ const courseSlice = createSlice({
     },
     deleteTest: (state, action: PayloadAction<number>) => {
       state.tests = state.tests.filter(test => test.id !== action.payload);
+      state.questions = state.questions.filter(question => question.testId !== action.payload);
     },
     addQuestion: (state, action: PayloadAction<Question>) => {
       state.questions.push(action.payload);
@@ -87,3 +93,4 @@ export const {
   deleteQuestion,
 } = courseSlice.actions;
 export default courseSlice.reducer;
+

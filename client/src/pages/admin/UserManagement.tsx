@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,7 @@ const UserManagement: React.FC = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -30,7 +32,13 @@ const UserManagement: React.FC = () => {
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const filteredUsers = searchQuery
+    ? users.filter((user: User) =>
+        user.username?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : users;
+
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -64,9 +72,23 @@ const UserManagement: React.FC = () => {
   const handleSaveUser = async () => {
     if (currentUser) {
       if (isEditing) {
-        dispatch(updateUser(currentUser));
+        await dispatch(updateUser(currentUser));
       } else {
-        dispatch(createUser(currentUser));
+        const maxId =
+          users.length > 0 ? Math.max(...users.map((user: any) => user.id)) : 0;
+        const newId = maxId + 1;
+        const encryptedPassword = CryptoJS.DES.encrypt(
+          currentUser.password,
+          "secret_key"
+        ).toString();
+        const defaultTestHistory: any = [];
+        const newUser = {
+          ...currentUser,
+          id: newId,
+          password: encryptedPassword,
+          testHistory: defaultTestHistory,
+        };
+        await dispatch(createUser(newUser));
       }
       handleCloseModal();
     }
@@ -79,7 +101,7 @@ const UserManagement: React.FC = () => {
         ...userToBlock,
         status: userToBlock.status === 1 ? 0 : 1,
       };
-      dispatch(updateUser(updatedUser));
+      await dispatch(updateUser(updatedUser));
     }
   };
 
@@ -90,7 +112,7 @@ const UserManagement: React.FC = () => {
         ...userToUpdate,
         role: userToUpdate.role === "admin" ? "user" : "admin",
       };
-      dispatch(updateUser(updatedUser));
+      await dispatch(updateUser(updatedUser));
     }
   };
 
@@ -102,9 +124,21 @@ const UserManagement: React.FC = () => {
     }));
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <div>
       <h2>User Manager</h2>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search by username"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </div>
       <button onClick={() => handleOpenModal()}>Add User</button>
       <table className="user-table">
         <thead>
@@ -139,7 +173,7 @@ const UserManagement: React.FC = () => {
         </tbody>
       </table>
       <div className="pagination">
-        {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
+        {[...Array(Math.ceil(filteredUsers.length / usersPerPage)).keys()].map(
           (number) => (
             <button key={number} onClick={() => paginate(number + 1)}>
               {number + 1}
@@ -162,6 +196,7 @@ const UserManagement: React.FC = () => {
               name="username"
               value={currentUser?.username || ""}
               onChange={handleInputChange}
+              readOnly
             />
           </label>
           <label>
@@ -171,20 +206,9 @@ const UserManagement: React.FC = () => {
               name="email"
               value={currentUser?.email || ""}
               onChange={handleInputChange}
+              readOnly
             />
           </label>
-          <label>
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={currentUser?.password || ""}
-              onChange={handleInputChange}
-            />
-          </label>
-          <button onClick={handleSaveUser}>
-            {isEditing ? "Save Changes" : "Add User"}
-          </button>
           <button onClick={handleCloseModal}>Cancel</button>
         </form>
       </Modal>

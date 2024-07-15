@@ -90,3 +90,62 @@
   }
 }
 
+.paper-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.paper-icon.blue {
+  background-color: #007bff;
+}
+
+.paper-icon.green {
+  background-color: #28a745;
+}
+
+.paper-icon.red {
+  background-color: #dc3545;
+}
+
+.paper-icon.yellow {
+  background-color: #ffc107;
+}
+
+.paper-icon.purple {
+  background-color: #6f42c0;
+}
+
+.paper-icon.orange {
+  background-color: #fd7e14;
+}
+
+.paper-icon.gray {
+  background-color: #6c757d;
+}
+
+.paper-icon.pink {
+  background-color: #e83e8c;
+}
+
+.paper-icon.brown {
+  background-color: #a55e40;
+}
+
+.paper-icon.black {
+  background-color: #333;
+}
+
+.paper-icon.white {
+  background-color: #fff;
+}
+
+.paper-icon svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}

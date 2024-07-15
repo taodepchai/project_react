@@ -12729,7 +12729,8 @@
           "score": 7.5
         }
       ],
-      "role": "user"
+      "role": "user",
+      "status": 0
     },
     {
       "username": "admin",
@@ -12761,8 +12762,23 @@
       "email": "admin@admin.com",
       "password": "U2FsdGVkX194eUrP1o1uzEsCQCvOj6j3EP5a8agzj2I=",
       "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/avatars%2F8?alt=media&token=a45906ad-6d0d-4e1a-828c-3be130728731",
-      "testHistory": [],
-      "status": 0,
+      "testHistory": [
+        {
+          "testId": 1,
+          "testName": "Test 1 for Lession 1",
+          "startTime": "Sat Jul 13 2024 23:05:41 GMT+0700 (Giờ Đông Dương)",
+          "endTime": "Sat Jul 13 2024 23:05:51 GMT+0700 (Giờ Đông Dương)",
+          "score": 0
+        },
+        {
+          "testId": 1,
+          "testName": "Test 1 for Lession 1",
+          "startTime": "Mon Jul 15 2024 08:46:00 GMT+0700 (Giờ Đông Dương)",
+          "endTime": "Mon Jul 15 2024 08:46:42 GMT+0700 (Giờ Đông Dương)",
+          "score": 0
+        }
+      ],
+      "status": 1,
       "role": "admin"
     },
     {
@@ -12770,9 +12786,29 @@
       "username": "hoangkp1122",
       "email": "janc@mac.ca",
       "password": "U2FsdGVkX182DOtR4Qi6zpm9W4/nmrSC",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/avatars%2F9?alt=media&token=a6853159-c6c6-4864-a7b1-8d59d16b64aa",
+      "testHistory": [],
+      "status": 1,
+      "role": "user"
+    },
+    {
+      "id": 10,
+      "username": "hhh",
+      "email": "hhh@hh.com",
+      "password": "U2FsdGVkX182DOtR4Qi6zpm9W4/nmrSC",
+      "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/avatars%2F10?alt=media&token=98289d23-4ec4-44fc-9d28-5ed6e904292d",
+      "testHistory": [],
+      "status": 1,
+      "role": "user"
+    },
+    {
+      "id": 11,
+      "username": "B23DTCN169",
+      "email": "acca@hamc.coa",
+      "password": "U2FsdGVkX1+Ca4rLox1+s96PGBImQC30",
       "avtUrl": "https://firebasestorage.googleapis.com/v0/b/test-f9878.appspot.com/o/bc439871417621836a0eeea768d60944.jpg?alt=media&token=be7e21a7-d6a5-4916-ae3a-67e53b00d209",
       "testHistory": [],
-      "status": 0,
+      "status": 1,
       "role": "user"
     }
   ]

@@ -77,7 +77,7 @@ const Signup: React.FC = () => {
   };
 
   const handleLoginRedirect = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (

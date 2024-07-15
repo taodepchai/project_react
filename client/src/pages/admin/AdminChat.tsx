@@ -11,7 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { fetchUsers } from "../../store/reducers/userSlice";
-// import "./AdminChat.scss";
+import "./AdminChat.scss";
+import Header from "../until/Header";
 
 const AdminChat: React.FC = () => {
   const navigate = useNavigate();
@@ -21,10 +22,32 @@ const AdminChat: React.FC = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [token, setToken] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      if (users) {
+        fetchCurrentUser(storedToken);
+      }
+    }
+  }, [users]);
+
+  const fetchCurrentUser = (token: string) => {
+    try {
+      const userId = Number(token);
+      const user = users.find((user: any) => user.id === userId);
+      setCurrentUser(user);
+    } catch (err) {
+      console.error("Error fetching current user:", err);
+    }
+  };
 
   const fetchChatHistory = async (userId: number) => {
     try {
@@ -32,6 +55,8 @@ const AdminChat: React.FC = () => {
       const docSnap = await getDoc(chatHistoryRef);
       if (docSnap.exists()) {
         setChatHistory(docSnap.data().messages);
+      } else {
+        setChatHistory([]);
       }
     } catch (err) {
       console.error("Error fetching chat history:", err);
@@ -58,13 +83,17 @@ const AdminChat: React.FC = () => {
 
   const updateChatHistory = async (messagesData: any[]) => {
     if (selectedUser) {
+      const userMessages = messagesData.filter(
+        (message) =>
+          message.sender === "Admin" && message.recipient === selectedUser.id
+      );
       try {
         const chatHistoryRef = doc(
           db,
           "chatHistory",
           selectedUser.id.toString()
         );
-        await setDoc(chatHistoryRef, { messages: messagesData });
+        await setDoc(chatHistoryRef, { messages: userMessages });
       } catch (err) {
         console.error("Error updating chat history:", err);
       }
@@ -91,12 +120,49 @@ const AdminChat: React.FC = () => {
     navigate("/");
   };
 
+  const handleContactClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate("/contact-admin");
+    } else {
+      navigate("/contact");
+    }
+  };
+
+  const handleAdminClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate(`/admin/${currentUser.role}`);
+    }
+  };
+
+  const handleUserClick = () => {
+    if (currentUser) {
+      navigate(`/user-info/${currentUser.id}`);
+    }
+  };
+
+  const login = () => {
+    navigate("/login");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setCurrentUser(null);
+    navigate("/login");
+  };
+
   return (
     <div className="admin-chat-page">
-      <div className="header">
-        <h1>Admin Chat</h1>
-        <button onClick={handleBackToMainPage}>Quay lại</button>
-      </div>
+      <Header
+        currentUser={currentUser}
+        token={token}
+        setCurrentUser={setCurrentUser}
+        handleContactClick={handleContactClick}
+        handleAdminClick={handleAdminClick}
+        handleUserClick={handleUserClick}
+        login={login}
+        logout={logout}
+      />
       <div className="user-selection">
         <h2>Select User</h2>
         <select
@@ -116,23 +182,34 @@ const AdminChat: React.FC = () => {
         </select>
       </div>
       <div className="messages-container">
-        {messages
-          .filter((message: any) => message.recipient === selectedUser.id)
-          .map((message: any) => (
-            <div
-              key={message.id}
-              className={`message ${
-                message.sender === "Admin"
-                  ? "admin-message"
-                  : "user-message"
-              }`}
-            >
-              <p>{message.content}</p>
-              <span className="timestamp">
-                {new Date(message.timestamp.seconds * 1000).toDateString()}
-              </span>
-            </div>
-          ))}
+        {selectedUser &&
+          messages
+            .filter(
+              (message: any) =>
+                (message.sender === "Admin" &&
+                  message.recipient === selectedUser.id) ||
+                (message.sender === selectedUser.username &&
+                  message.recipient === "Admin")
+            )
+            .map((message: any) => (
+              <div
+                key={message.id}
+                className={`message ${
+                  message.sender === "Admin" ? "admin-message" : "user-message"
+                }`}
+              >
+                {message.sender === "Admin" && (
+                  <span className="sender">Admin:</span>
+                )}
+                {message.sender === selectedUser.username && (
+                  <span className="sender">{selectedUser.username}:</span>
+                )}
+                <p>{message.content}</p>
+                <span className="timestamp">
+                  {new Date(message.timestamp.seconds * 1000).toDateString()}
+                </span>
+              </div>
+            ))}
       </div>
       <div className="input-container">
         <input

@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { fetchUsers } from "../../store/reducers/userSlice";
+import Header from "../until/Header";
+
 // import "./Contact.scss";
 
 const Contact: React.FC = () => {
@@ -18,10 +20,10 @@ const Contact: React.FC = () => {
   const dispatch = useDispatch();
   const users = useSelector((state: any) => state.user.users);
   const [token, setToken] = useState<string | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -85,7 +87,15 @@ const Contact: React.FC = () => {
           "chatHistory",
           currentUser.id.toString()
         );
-        await setDoc(chatHistoryRef, { messages: messagesData });
+        const userMessages = messagesData.filter(
+          (message) =>
+            (message.sender === "Admin" &&
+              message.recipient === currentUser.id) ||
+            (message.sender === currentUser.username &&
+              message.recipient === "Admin")
+        );
+        await setDoc(chatHistoryRef, { messages: userMessages });
+        setChatHistory(userMessages);
       } catch (err) {
         console.error("Error updating chat history:", err);
       }
@@ -98,7 +108,7 @@ const Contact: React.FC = () => {
         await addDoc(collection(db, "messages"), {
           content: newMessage,
           sender: currentUser.username,
-          recipient: currentUser.id,
+          recipient: "Admin",
           timestamp: new Date(),
         });
         setNewMessage("");
@@ -112,49 +122,72 @@ const Contact: React.FC = () => {
     navigate("/");
   };
 
+  const handleContactClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate("/contact-admin");
+    } else {
+      navigate("/contact");
+    }
+  };
+
+  const handleAdminClick = () => {
+    if (currentUser && currentUser.role === "admin") {
+      navigate(`/admin/${currentUser.role}`);
+    }
+  };
+
+  const handleUserClick = () => {
+    if (currentUser) {
+      navigate(`/user-info/${currentUser.id}`);
+    }
+  };
+
+  const login = () => {
+    navigate("/login");
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setCurrentUser(null);
+    navigate("/login");
+  };
+
   return (
     <div className="contact-page">
-      <div className="header">
-        <h1>Hỏi đáp</h1>
-        <button onClick={handleBackToMainPage}>Quay lại</button>
-      </div>
+      <Header
+        currentUser={currentUser}
+        token={token}
+        setCurrentUser={setCurrentUser}
+        handleContactClick={handleContactClick}
+        handleAdminClick={handleAdminClick}
+        handleUserClick={handleUserClick}
+        login={login}
+        logout={logout}
+      />
       <div className="messages-container">
-        {chatHistory.length > 0 && (
-          <>
-            {chatHistory.map((message: any) => (
-              <div
-                key={message.id}
-                className={`message ${
-                  message.sender === currentUser.username
-                    ? "user-message"
-                    : "admin-message"
-                }`}
-              >
-                <p>{message.content}</p>
-                <span className="timestamp">
-                  {new Date(message.timestamp.seconds * 1000).toDateString()}
-                </span>
-              </div>
-            ))}
-          </>
-        )}
-        {messages
-          .filter((message: any) => message.recipient === currentUser.id)
-          .map((message: any) => (
-            <div
-              key={message.id}
-              className={`message ${
-                message.sender === currentUser.username
-                  ? "user-message"
-                  : "admin-message"
-              }`}
-            >
-              <p>{message.content}</p>
-              <span className="timestamp">
-                {new Date(message.timestamp.seconds * 1000).toDateString()}
-              </span>
-            </div>
-          ))}
+        {/* Display combined chat history */}
+        {messages.map((message: any) => (
+          <div
+            key={message.id}
+            className={`message ${
+              message.sender === currentUser.username
+                ? "user-message"
+                : "admin-message"
+            }`}
+          >
+            {message.sender === "Admin" && (
+              <span className="sender">Admin:</span>
+            )}
+            {message.sender === currentUser.username && (
+              <span className="sender">{currentUser.username}:</span>
+            )}
+            <p>{message.content}</p>
+            <span className="timestamp">
+              {new Date(message.timestamp.seconds * 1000).toDateString()}
+            </span>
+          </div>
+        ))}
       </div>
       <div className="input-container">
         <input
@@ -170,3 +203,4 @@ const Contact: React.FC = () => {
 };
 
 export default Contact;
+
